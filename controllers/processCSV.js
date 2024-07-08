@@ -67,11 +67,11 @@ const processCSV = async (req, res) => {
 
         // storing product listings with urls
         results.forEach(async (row) => {
-          const product_id = uuidv4();
+          // const product_id = uuidv4();
           const input_img_urls = row[2];
 
           const product = {
-            product_id,
+            // product_id,
             request_id,
             product_name: row[1],
             input_img_urls,

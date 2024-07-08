@@ -6,10 +6,10 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.String,
       ref: "Request",
     },
-    product_id: {
-      type: String,
-      unique: true,
-    },
+    // product_id: {
+    //   type: String,
+    //   unique: true,
+    // },
     product_name: String,
     input_img_urls: [String],
     output_img_urls: [String],

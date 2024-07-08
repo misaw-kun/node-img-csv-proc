@@ -10,9 +10,10 @@ const handleWebhook = async (req, res) => {
     await product.save();
 
     const products = await Product.find({ request_id });
+    // checking if all the products have their "output_img_urls" updated
     const allUpdated = products.every((p) => p.output_img_urls.length > 0);
 
-    // changing status on completion
+    // changing status on completion of all jobs associated with a request ticket
     if (allUpdated) {
       await Request.updateOne({ request_id }, { status: "completed" });
       res.json({ message: "Request marked for completion" });

@@ -3,9 +3,6 @@ import imageQueue, { redis_conn } from "./queue.js";
 import sharp from "sharp";
 import fs from "node:fs";
 import { v4 as uuidv4 } from "uuid";
-import Database from "./connect.js";
-
-// const redis = Database.getInstance().redis_conn;
 
 const outputDir = "./output_images";
 if (!fs.existsSync(outputDir)) {
@@ -49,6 +46,7 @@ const imageWorker = new Worker(
 
 const queueEvents = new QueueEvents("imageQueue", { connection: redis_conn });
 
+// triggers on each job completion
 queueEvents.on("completed", async ({ jobId, returnvalue }) => {
   console.log(`Job ${jobId} completed!`);
 
@@ -64,6 +62,11 @@ queueEvents.on("completed", async ({ jobId, returnvalue }) => {
     totalJobsPerProduct
   );
 
+  /**
+   * this block runs when "total" jobs associated with one product
+   * match with the number of "completed" jobs for that that product
+   * this leads to "triggering the webhook" for each batch
+   */
   if (parseInt(completedCount, 10) === parseInt(totalJobsPerProduct, 10)) {
     const jobs = await imageQueue.getJobs(["completed"]);
     //  getting all completed jobs "per product"
