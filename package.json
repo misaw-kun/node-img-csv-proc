@@ -5,9 +5,9 @@
   "description": "system to efficiently process image data from CSV files",
   "main": "index.js",
   "scripts": {
-    "start": "node --env-file=.env index.js",
-    "dev": "node --env-file=.env --watch index.js",
-    "start:worker": "node --env-file=.env ./utils/worker.js"
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "start:worker": "node ./utils/worker.js"
   },
   "author": "wasim",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "bullmq": "^5.8.4",
     "cloudinary": "^2.2.0",
     "csv-parser": "^3.0.0",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "ioredis": "^5.4.1",
     "mongoose": "^8.4.4",
