@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { Queue } from "bullmq";
 import IOredis from "ioredis";
 
