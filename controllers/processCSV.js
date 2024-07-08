@@ -73,6 +73,7 @@ const processCSV = async (req, res) => {
           const product = {
             // product_id,
             request_id,
+            serial_no: row[0],
             product_name: row[1],
             input_img_urls,
             output_img_urls: [],

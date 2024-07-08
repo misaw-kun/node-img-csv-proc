@@ -4,6 +4,7 @@ import Database from "./utils/connect.js";
 import processCSV from "./controllers/processCSV.js";
 import checkStatus from "./controllers/checkStatus.js";
 import handleWebhook from "./controllers/handleWebhook.js";
+import generateOutputCSV from "./controllers/generateOutputCSV.js";
 
 const app = express();
 app.use(express.json());
@@ -19,6 +20,7 @@ app.get("/", async (req, res) => {
 app.post("/upload", upload.single("csv"), processCSV);
 app.get("/status/:request_id", checkStatus);
 app.post("/webhook", handleWebhook);
+app.get("/download-output-csv/:request_id", generateOutputCSV);
 
 app.listen(PORT, async () => {
   console.log(`App listening on port ${PORT}`);

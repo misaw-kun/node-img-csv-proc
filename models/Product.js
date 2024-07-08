@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema(
     //   type: String,
     //   unique: true,
     // },
+    serial_no: String,
     product_name: String,
     input_img_urls: [String],
     output_img_urls: [String],

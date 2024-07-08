@@ -1,13 +1,16 @@
 import { QueueEvents, Worker } from "bullmq";
 import imageQueue, { redis_conn } from "./queue.js";
 import sharp from "sharp";
-import fs from "node:fs";
+// import fs from "node:fs";
 import { v4 as uuidv4 } from "uuid";
+import cloudinary from "./cloudinaryConfig.js";
+// import { exit } from "node:process";
 
-const outputDir = "./output_images";
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir);
-}
+// const outputDir = "./output_images";
+// if (!fs.existsSync(outputDir)) {
+//   fs.mkdirSync(outputDir);
+// }
+console.info("Worker listening for queue jobs...");
 
 const imageWorker = new Worker(
   "imageQueue",
@@ -23,16 +26,31 @@ const imageWorker = new Worker(
         .toBuffer();
       console.log(`Processed image from ${url}`);
 
-      const outputFilename = `output-${uuidv4()}.jpg`;
-      const outputPath = `${outputDir}/${outputFilename}`;
+      const outputFilename = `output-${uuidv4()}`;
+      // for locally storing processed images
+      // const outputPath = `${outputDir}/${outputFilename}`;
+
+      // fs.writeFileSync(outputPath, outputBuffer);
+      // console.log(`Saved image to ${outputPath}`);
 
       //    TODO: store the images in a bucket (S3, cloudinary)
-      fs.writeFileSync(outputPath, outputBuffer);
-      console.log(`Saved image to ${outputPath}`);
+      const uploadResult = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            public_id: outputFilename,
+            resource_type: "image",
+          },
+          (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+          }
+        );
+
+        uploadStream.end(outputBuffer);
+      });
 
       //   TODO: output URL changes when 3rd party storage provider used
-
-      const outputUrl = outputPath;
+      const outputUrl = uploadResult.secure_url;
 
       //    TODO: update product document for output urls through WEBHOOK
       return { outputUrl, requestId, productOid };
@@ -50,7 +68,9 @@ const queueEvents = new QueueEvents("imageQueue", { connection: redis_conn });
 queueEvents.on("completed", async ({ jobId, returnvalue }) => {
   console.log(`Job ${jobId} completed!`);
 
-  const { requestId, productOid, outputUrl } = returnvalue;
+  const { requestId, productOid } = returnvalue;
+
+  // checking redis key for images per product completed vs total
   const key = `product:${productOid}:request:${requestId}`;
   const completedCount = await redis_conn.incr(`${key}:completed`);
 
@@ -58,7 +78,7 @@ queueEvents.on("completed", async ({ jobId, returnvalue }) => {
   console.log(
     "completed count",
     completedCount,
-    "jobs per prod",
+    "jobs for this product",
     totalJobsPerProduct
   );
 
@@ -82,7 +102,8 @@ queueEvents.on("completed", async ({ jobId, returnvalue }) => {
       let outputUrls = productJobs.map((job) => job.returnvalue.outputUrl);
 
       console.log("Calling webhook...");
-      const webhookURL = "http://localhost:3000/webhook";
+      const webhookURL =
+        process.env.WEBHOOK_URL || "http://localhost:3000/webhook";
       try {
         const response = await fetch(webhookURL, {
           method: "POST",
