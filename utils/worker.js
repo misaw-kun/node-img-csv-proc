@@ -50,7 +50,7 @@ const imageWorker = new Worker(
       });
 
       //   TODO: output URL changes when 3rd party storage provider used
-      const outputUrl = uploadResult.secure_url;
+      const outputUrl = await uploadResult.secure_url;
 
       //    TODO: update product document for output urls through WEBHOOK
       return { outputUrl, requestId, productOid };
