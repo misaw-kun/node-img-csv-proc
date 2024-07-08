@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { QueueEvents, Worker } from "bullmq";
 import imageQueue, { redis_conn } from "./queue.js";
 import sharp from "sharp";
