@@ -109,6 +109,7 @@ queueEvents.on("completed", async ({ jobId, returnvalue }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "x-api-Key": process.env.WEBHOOK_API_KEY,
           },
           body: JSON.stringify({
             request_id: returnvalue.requestId,

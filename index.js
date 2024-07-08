@@ -12,6 +12,16 @@ import generateOutputCSV from "./controllers/generateOutputCSV.js";
 const app = express();
 app.use(express.json());
 
+const apiKey = process.env.WEBHOOK_API_KEY;
+// middleware guarding webhook from unauthorized outside requests
+const verifyApiKey = (req, res, next) => {
+  const providedApiKey = req.headers["x-api-key"];
+  if (!providedApiKey || providedApiKey !== apiKey) {
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+  next();
+};
+
 const db_conn = Database.getInstance();
 const upload = multer({ dest: "uploads/" });
 const PORT = process.env.PORT || 3000;
@@ -22,7 +32,7 @@ app.get("/", async (req, res) => {
 
 app.post("/upload", upload.single("csv"), processCSV);
 app.get("/status/:request_id", checkStatus);
-app.post("/webhook", handleWebhook);
+app.post("/webhook", verifyApiKey, handleWebhook);
 app.get("/download-output-csv/:request_id", generateOutputCSV);
 
 app.listen(PORT, async () => {
