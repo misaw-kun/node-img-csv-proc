@@ -32,9 +32,10 @@ npm install
 ```
 
 3. Environment Variables:
+
    Create a .env file from the `.env.example` file.
 
-4. Start the Server:
+5. Start the Server:
 
 ```sh
 npm start
