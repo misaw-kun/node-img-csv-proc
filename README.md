@@ -28,7 +28,6 @@ cd node-img-csv-proc
 2. Install Dependencies:
 
 ```sh
-Copy code
 npm install
 ```
 
@@ -38,16 +37,18 @@ npm install
 4. Start the Server:
 
 ```sh
-Copy code
 npm start
 ```
 
 5. Start the Worker:
 
 ```sh
-Copy code
 npm run start:worker
 ```
+
+## LLD
+
+[check here](./LLD.md)
 
 ## Postman Collection
 
