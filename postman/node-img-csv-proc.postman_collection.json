@@ -1,0 +1,210 @@
+{
+	"info": {
+		"_postman_id": "7ec931ee-9fa0-481c-b8b8-112097466b6b",
+		"name": "node-img-csv-proc",
+		"description": "this is a collection of API and webhook endpoints.\n\n- the default env is `local`**.**\n    \n- make sure to switch the env to `prod` if testing on hosted instance\n    \n\ndon't use this API for anything too heavy (it's hosted on a freetier lightsail instance)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36808206"
+	},
+	"item": [
+		{
+			"name": "/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}",
+					"host": [
+						"{{BASE_URL}}"
+					]
+				},
+				"description": "test endpoint for api status"
+			},
+			"response": []
+		},
+		{
+			"name": "/status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/status/:request_id",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"status",
+						":request_id"
+					],
+					"variable": [
+						{
+							"key": "request_id",
+							"value": "{{requestId}}"
+						}
+					]
+				},
+				"description": "for checking status of the provided `request_id` in path variables.\n\n**returns:** status of request, along with processed data so far"
+			},
+			"response": []
+		},
+		{
+			"name": "/upload",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Store the unique request identifier in an environment or global variable\r",
+							"var requestId = pm.response.json().request_id;\r",
+							"pm.environment.set(\"requestId\", requestId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "csv",
+							"type": "file",
+							"src": "postman-cloud:///1ef3d5fe-3a1b-4d70-b61d-8f3861bc27ac"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/upload",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"upload"
+					]
+				},
+				"description": "csv uploading endpoint accepting `form-data` with file upload.\n\nNB: there is a default csv attached for demonstration, with not-so-heavy images.\n\n**returns:** a unique request identifier"
+			},
+			"response": []
+		},
+		{
+			"name": "/download-output-csv",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/download-output-csv/:request_id",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"download-output-csv",
+						":request_id"
+					],
+					"variable": [
+						{
+							"key": "request_id",
+							"value": "{{requestId}}"
+						}
+					]
+				},
+				"description": "accepts a `request_id` in path variables for the relevant request\n\n**returns:** an output csv file generated for that `request_id`"
+			},
+			"response": [
+				{
+					"name": "/download-output-csv",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://13.201.144.123/download-output-csv/:request_id",
+							"protocol": "http",
+							"host": [
+								"13",
+								"201",
+								"144",
+								"123"
+							],
+							"path": [
+								"download-output-csv",
+								":request_id"
+							],
+							"variable": [
+								{
+									"key": "request_id",
+									"value": "145386a9-54fd-4c00-bc8b-565daf97e988"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Mon, 08 Jul 2024 19:31:21 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/csv; charset=utf-8"
+						},
+						{
+							"key": "Content-Disposition",
+							"value": "attachment; filename=\"output-145386a9-54fd-4c00-bc8b-565daf97e988.csv\""
+						},
+						{
+							"key": "Content-Length",
+							"value": "2256"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"8d0-oQ+ELth8cL9DOPivd33N5l0GtnE\""
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=2, max=100"
+						},
+						{
+							"key": "Connection",
+							"value": "Keep-Alive"
+						}
+					],
+					"cookie": [],
+					"body": "\"S. No.\",\"Product Name\",\"Input Image Urls\",\"Output Image Urls\"\n\"668c3d74ebf15aea48728f8e\",\"SKU1\",\"https://fastly.picsum.photos/id/36/4179/2790.jpg?hmac=OCuYYm0PkDCMwxWhrtoSefG5UDir4O0XCcR2x-aSPjs,https://fastly.picsum.photos/id/60/1920/1200.jpg?hmac=fAMNjl4E_sG_WNUjdU39Kald5QAHQMh-_-TsIbbeDNI,https://fastly.picsum.photos/id/76/4912/3264.jpg?hmac=VkFcSa2Rbv0R0ndYnz_FAmw02ON1pPVjuF_iVKbiiV8\",\"https://res.cloudinary.com/dx6mylv5z/image/upload/v1720466807/output-d7616528-f392-45b3-aa10-259c19b7ec2f.jpg,https://res.cloudinary.com/dx6mylv5z/image/upload/v1720466808/output-d147e4e9-f2a7-4e51-a389-f1f2f6f64671.jpg,https://res.cloudinary.com/dx6mylv5z/image/upload/v1720466812/output-e9a39910-26d3-4279-bfec-6c947ed66f47.jpg\"\n\"668c3d74ebf15aea48728f8f\",\"SKU2\",\"https://fastly.picsum.photos/id/78/1584/2376.jpg?hmac=80UVSwpa9Nfcq7sQ5kxb9Z5sD2oLsbd5zkFO5ybMC4E,https://fastly.picsum.photos/id/82/1500/997.jpg?hmac=VcdCqu9YiLpbCtr8YowUCSUD3-245TGekiXmtiMXotw,https://fastly.picsum.photos/id/84/1280/848.jpg?hmac=YFRYDI4UsfbeTzI8ZakNOR98wVU7a-9a2tGF542539s\",\"https://res.cloudinary.com/dx6mylv5z/image/upload/v1720466814/output-7d2da202-b24f-45e6-8ec2-30c160bc3276.jpg,https://res.cloudinary.com/dx6mylv5z/image/upload/v1720466816/output-e43d3c4c-823d-4f36-a26b-64a8715e3ebc.jpg,https://res.cloudinary.com/dx6mylv5z/image/upload/v1720466818/output-6551de04-ba22-4208-8b80-2efb649a8107.jpg\"\n\"668c3d74ebf15aea48728f90\",\"SKU3\",\"https://fastly.picsum.photos/id/88/1280/1707.jpg?hmac=NnkwPVDBTVxHkc4rALB_fyu-OHY2usdm7iRk5El7JC4,https://fastly.picsum.photos/id/96/4752/3168.jpg?hmac=KNXudB1q84CHl2opIFEY4ph12da5JD5GzKzH5SeuRVM,https://fastly.picsum.photos/id/106/2592/1728.jpg?hmac=E1-3Hac5ffuCVwYwexdHImxbMFRsv83exZ2EhlYxkgY,https://fastly.picsum.photos/id/111/4400/2656.jpg?hmac=leq8lj40D6cqFq5M_NLXkMYtV-30TtOOnzklhjPaAAQ\",\"https://res.cloudinary.com/dx6mylv5z/image/upload/v1720466820/output-599b615c-ce7c-48c6-b758-95cbda9ae77f.jpg,https://res.cloudinary.com/dx6mylv5z/image/upload/v1720466823/output-4543b713-b522-46ff-8dda-97aa97daa90d.jpg,https://res.cloudinary.com/dx6mylv5z/image/upload/v1720466825/output-2e3d6e0b-916d-409c-b78f-10e63ae50144.jpg,https://res.cloudinary.com/dx6mylv5z/image/upload/v1720466828/output-7107ecf6-3103-4406-a0f7-f3d0ba111281.jpg\""
+				}
+			]
+		},
+		{
+			"name": "/webhook",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/webhook",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"webhook"
+					]
+				},
+				"description": "just for demonstration of the protected route.  \nDON'T CALL IT WITH VALID API KEYS ( as it gets called internally by the worker on a successful batch of jobs)"
+			},
+			"response": []
+		}
+	]
+}
