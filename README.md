@@ -18,6 +18,10 @@ This API allows users to upload CSV files with image URLs, processes the images,
 
 # Setup Instructions
 
+Either use the postman collection for a deployed version
+
+or run locally with own credentials 👇
+
 1. Clone the Repository:
 
 ```sh
